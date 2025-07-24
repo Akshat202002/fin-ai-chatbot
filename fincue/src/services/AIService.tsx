@@ -30,13 +30,17 @@ class AIService {
   }
 
   private generatePersonaAnalysis(userProfile: any): PersonaAnalysis {
-    const { age, employment, goal, location, gender } = userProfile;
+    const { age, employment, goal, location, gender, insuranceType } = userProfile;
     
     // Simple persona detection logic
     let detectedPersona = 'general';
     let confidence = 85;
 
-    if (employment === 'student') {
+    // Special case for insurance goal
+    if (goal === 'insurance') {
+      detectedPersona = 'insurance_seeker';
+      confidence = 95;
+    } else if (employment === 'student') {
       detectedPersona = 'student';
       confidence = 95;
     } else if (age === '18-24' || age === '25-34') {
@@ -63,6 +67,55 @@ class AIService {
 
   private getPersonaRecommendations(persona: string, userProfile: any): FinancialRecommendation[] {
     const recommendations: Record<string, FinancialRecommendation[]> = {
+      insurance_seeker: [
+        {
+          category: 'Life Insurance',
+          title: userProfile.insuranceType === 'term' ? 'Term Life Insurance Plan' : 'Whole Life Insurance Plan',
+          description: userProfile.insuranceType === 'term' 
+            ? 'Get maximum coverage at lowest cost with term insurance'
+            : 'Build wealth while protecting your family with whole life insurance',
+          priority: 'high',
+          actionItems: userProfile.insuranceType === 'term' ? [
+            'Calculate coverage needed (10-12x annual income)',
+            'Compare term plans from top insurers',
+            'Choose 20-30 year term based on your age',
+            'Complete medical check-ups for better rates',
+            'Consider increasing coverage with life changes'
+          ] : [
+            'Understand cash value vs death benefit',
+            'Compare whole life vs universal life options',
+            'Review investment component performance',
+            'Plan for higher premiums vs term insurance',
+            'Consider tax advantages of cash value growth'
+          ]
+        },
+        {
+          category: 'Health Insurance',
+          title: 'Comprehensive Health Coverage',
+          description: 'Protect against medical emergencies with adequate health insurance',
+          priority: 'high',
+          actionItems: [
+            'Review employer health insurance options',
+            'Consider family floater vs individual policies',
+            'Add top-up/super top-up for higher coverage',
+            'Include critical illness rider',
+            'Maintain continuous coverage to avoid waiting periods'
+          ]
+        },
+        {
+          category: 'Emergency Planning',
+          title: 'Financial Safety Net',
+          description: 'Build emergency fund alongside insurance protection',
+          priority: 'medium',
+          actionItems: [
+            'Save 6-12 months of expenses in liquid funds',
+            'Keep insurance premiums in emergency budget',
+            'Create beneficiary and nominee list',
+            'Store all insurance documents securely',
+            'Review and update coverage annually'
+          ]
+        }
+      ],
       student: [
         {
           category: 'Budgeting',
@@ -260,6 +313,19 @@ class AIService {
 
   private getPersonaInsights(persona: string, userProfile: any): string[] {
     const insights: Record<string, string[]> = {
+      insurance_seeker: userProfile.insuranceType === 'term' ? [
+        "Term insurance provides 10-20x more coverage than whole life for same premium",
+        "Buy term insurance early - premiums increase significantly with age",
+        "Online term plans are 40-60% cheaper than offline plans",
+        "Term insurance premiums are tax deductible under Section 80C",
+        "Consider increasing coverage with major life events (marriage, children, home purchase)"
+      ] : [
+        "Whole life insurance combines protection with forced savings",
+        "Cash value grows tax-deferred but returns are typically 4-6% annually",
+        "Premiums are 10-20x higher than term insurance for same coverage",
+        "Consider whole life only if you've maxed other investment options",
+        "Policy loans against cash value can provide tax-free income in retirement"
+      ],
       student: [
         "Starting early gives you a 40-year head start on compound growth",
         "Even $50/month invested now could become $175,000 by retirement",

@@ -15,22 +15,43 @@ const OnboardingScreen = () => {
   const { userProfile, setUserProfile } = useUser();
 
   const handleNext = async (key: string, value: string) => {
+    console.log(`OnboardingScreen: handleNext called with key=${key}, value=${value}, currentStep=${step}`);
+    
     const updatedProfile = {
       ...userProfile,
       [key]: value
     };
     
-    setUserProfile(updatedProfile);
+    console.log('OnboardingScreen: Updated profile:', updatedProfile);
+    await setUserProfile(updatedProfile);
     
-    if (key === 'goal' && value.toLowerCase() !== 'insurance') {
-      // Skip insurance type selection if goal is not insurance
-      setStep(prev => prev + 2);
-    } else {
-      setStep(prev => prev + 1);
+    // Handle goal selection logic
+    if (key === 'goal') {
+      console.log(`OnboardingScreen: Goal selected: ${value}`);
+      if (value.toLowerCase() === 'insurance') {
+        console.log('OnboardingScreen: Moving to insurance type selection (step 7)');
+        setStep(7);
+        return;
+      } else {
+        console.log('OnboardingScreen: Non-insurance goal selected, completing onboarding');
+        return;
+      }
     }
+    
+    // Handle insurance type selection (final step)
+    if (key === 'insuranceType') {
+      console.log(`OnboardingScreen: Insurance type selected: ${value}, completing onboarding`);
+      return;
+    }
+    
+    // Normal flow - go to next step
+    const nextStep = step + 1;
+    console.log(`OnboardingScreen: Moving to next step: ${nextStep}`);
+    setStep(nextStep);
   };
 
   const renderStep = () => {
+    console.log(`OnboardingScreen: Rendering step ${step}`);
     switch (step) {
       case 0:
         return <LanguageSelection onNext={handleNext} />;
@@ -47,10 +68,9 @@ const OnboardingScreen = () => {
       case 6:
         return <GoalSelection onNext={handleNext} />;
       case 7:
-        return userProfile?.goal === 'insurance' ? (
-          <InsuranceTypeSelection onNext={handleNext} />
-        ) : null;
+        return <InsuranceTypeSelection onNext={handleNext} />;
       default:
+        console.log(`OnboardingScreen: Unknown step ${step}`);
         return null;
     }
   };

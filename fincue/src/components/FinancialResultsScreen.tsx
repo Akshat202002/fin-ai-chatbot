@@ -16,7 +16,7 @@ import { useUser } from '../context/UserContext';
 import AIService, { PersonaAnalysis, FinancialRecommendation } from '../services/AIService';
 
 const FinancialResultsScreen = () => {
-  const { userProfile } = useUser();
+  const { userProfile, resetProfile } = useUser();
   const [analysis, setAnalysis] = useState<PersonaAnalysis | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -54,9 +54,15 @@ const FinancialResultsScreen = () => {
       women: 'Women Entrepreneur',
       elderly: 'Senior Citizen',
       urban: 'Urban Professional',
+      insurance_seeker: `Insurance Seeker (${userProfile?.insuranceType === 'term' ? 'Term' : 'Life'})`,
       general: 'General Profile'
     };
     return names[persona] || 'General Profile';
+  };
+
+  const handleUpdateProfile = async () => {
+    console.log('Update profile button clicked');
+    await resetProfile();
   };
 
   if (loading) {
@@ -186,10 +192,7 @@ const FinancialResultsScreen = () => {
           <Button 
             size="lg" 
             colorScheme="primary"
-            onPress={() => {
-              // Reset and go back to onboarding or allow editing
-              console.log('Start over or edit profile');
-            }}
+            onPress={handleUpdateProfile}
           >
             Update My Profile
           </Button>
