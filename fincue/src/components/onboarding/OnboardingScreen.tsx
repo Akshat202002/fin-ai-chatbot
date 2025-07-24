@@ -1,20 +1,33 @@
 import React, { useState } from 'react';
 import { Box, Center } from 'native-base';
-import { useUserProfile } from '../../context/UserProfileContext';
+import { useUser } from '../../context/UserContext';
 import LanguageSelection from './LanguageSelection';
 import GenderSelection from './GenderSelection';
 import SpeciallyAbledSelection from './SpeciallyAbledSelection';
 import AgeSelection from './AgeSelection';
 import EmploymentStatus from './EmploymentStatus';
 import LocationSelection from './LocationSelection';
+import GoalSelection from './GoalSelection';
+import InsuranceTypeSelection from './InsuranceTypeSelection';
 
 const OnboardingScreen = () => {
   const [step, setStep] = useState(0);
-  const { updateProfile } = useUserProfile();
+  const { userProfile, setUserProfile } = useUser();
 
   const handleNext = async (key: string, value: string) => {
-    await updateProfile(key as any, value);
-    setStep(prev => prev + 1);
+    const updatedProfile = {
+      ...userProfile,
+      [key]: value
+    };
+    
+    setUserProfile(updatedProfile);
+    
+    if (key === 'goal' && value.toLowerCase() !== 'insurance') {
+      // Skip insurance type selection if goal is not insurance
+      setStep(prev => prev + 2);
+    } else {
+      setStep(prev => prev + 1);
+    }
   };
 
   const renderStep = () => {
@@ -31,6 +44,12 @@ const OnboardingScreen = () => {
         return <EmploymentStatus onNext={handleNext} />;
       case 5:
         return <LocationSelection onNext={handleNext} />;
+      case 6:
+        return <GoalSelection onNext={handleNext} />;
+      case 7:
+        return userProfile?.goal === 'insurance' ? (
+          <InsuranceTypeSelection onNext={handleNext} />
+        ) : null;
       default:
         return null;
     }

@@ -5,6 +5,8 @@ export interface UserProfile {
   age: string;
   employment: string;
   location: string;
+  goal: string;
+  insuranceType: string;
 }
 
 export const initialUserProfile: UserProfile = {
@@ -13,5 +15,7 @@ export const initialUserProfile: UserProfile = {
   speciallyAbled: '',
   age: '',
   employment: '',
-  location: ''
+  location: '',
+  goal: '',
+  insuranceType: ''
 };
