@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
-import { Box, Center } from 'native-base';
-import { useUserProfile } from '../../context/UserProfileContext';
-import LanguageSelection from './LanguageSelection';
-import GenderSelection from './GenderSelection';
-import SpeciallyAbledSelection from './SpeciallyAbledSelection';
-import AgeSelection from './AgeSelection';
-import EmploymentStatus from './EmploymentStatus';
-import LocationSelection from './LocationSelection';
+import { Box } from 'native-base';
+import { useUserProfile } from '../context/UserProfileContext';
+import LanguageSelection from './onboarding/LanguageSelection';
+import AgeSelection from './onboarding/AgeSelection';
+import EmploymentStatus from './onboarding/EmploymentStatus';
+import LocationSelection from './onboarding/LocationSelection';
 
 const OnboardingScreen = () => {
   const [step, setStep] = useState(0);
@@ -22,14 +20,10 @@ const OnboardingScreen = () => {
       case 0:
         return <LanguageSelection onNext={handleNext} />;
       case 1:
-        return <GenderSelection onNext={handleNext} />;
-      case 2:
-        return <SpeciallyAbledSelection onNext={handleNext} />;
-      case 3:
         return <AgeSelection onNext={handleNext} />;
-      case 4:
+      case 2:
         return <EmploymentStatus onNext={handleNext} />;
-      case 5:
+      case 3:
         return <LocationSelection onNext={handleNext} />;
       default:
         return null;
@@ -38,9 +32,7 @@ const OnboardingScreen = () => {
 
   return (
     <Box flex={1} bg="white" safeArea>
-      <Center flex={1} px={4}>
-        {renderStep()}
-      </Center>
+      {renderStep()}
     </Box>
   );
 };
