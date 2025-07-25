@@ -12,11 +12,15 @@ import InsuranceTypeSelection from './InsuranceTypeSelection';
 
 const OnboardingScreen = () => {
   const [step, setStep] = useState(0);
+  const [language, setLanguage] = useState<'english' | 'hindi'>('english');
   const { userProfile, setUserProfile } = useUser();
 
   const handleNext = async (key: string, value: string) => {
     console.log(`OnboardingScreen: handleNext called with key=${key}, value=${value}, currentStep=${step}`);
     
+    if (key === 'language') {
+      setLanguage(value);
+    }
     const updatedProfile = {
       ...userProfile,
       [key]: value
@@ -54,21 +58,21 @@ const OnboardingScreen = () => {
     console.log(`OnboardingScreen: Rendering step ${step}`);
     switch (step) {
       case 0:
-        return <LanguageSelection onNext={handleNext} />;
+        return <LanguageSelection onNext={handleNext} selectedLang={language} />;
       case 1:
-        return <GenderSelection onNext={handleNext} />;
+        return <GenderSelection onNext={handleNext} selectedLang={language} />;
       case 2:
-        return <SpeciallyAbledSelection onNext={handleNext} />;
+        return <SpeciallyAbledSelection onNext={handleNext} selectedLang={language} />;
       case 3:
-        return <AgeSelection onNext={handleNext} />;
+        return <AgeSelection onNext={handleNext} selectedLang={language} />;
       case 4:
-        return <EmploymentStatus onNext={handleNext} />;
+        return <EmploymentStatus onNext={handleNext} selectedLang={language} />;
       case 5:
-        return <LocationSelection onNext={handleNext} />;
+        return <LocationSelection onNext={handleNext} selectedLang={language} />;
       case 6:
-        return <GoalSelection onNext={handleNext} />;
+        return <GoalSelection onNext={handleNext} selectedLang={language} />;
       case 7:
-        return <InsuranceTypeSelection onNext={handleNext} />;
+        return <InsuranceTypeSelection onNext={handleNext} selectedLang={language} />;
       default:
         console.log(`OnboardingScreen: Unknown step ${step}`);
         return null;
